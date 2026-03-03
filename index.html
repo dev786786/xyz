@@ -3,120 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CivicPulse AI | Public Leader Co-Pilot</title>
+    <title>WaveFlow AI | Physics-Informed Traffic Optimization</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
     <style>
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
-        .glow-blue { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap');
+        
+        :root {
+            --glow: #00f2ff;
+        }
+        body {
+            background-color: #05070a;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .wave-container {
+            height: 120px;
+            background: linear-gradient(90deg, rgba(0,242,255,0.05) 0%, rgba(0,0,0,0) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .traffic-car {
+            position: absolute;
+            height: 4px;
+            width: 20px;
+            background: var(--glow);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--glow);
+            transition: left 0.5s linear;
+        }
+
+        .math-card:hover {
+            border-color: var(--glow);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.15);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        .status-dot { animation: pulse 2s infinite; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+<body class="p-4 md:p-8">
 
-    <aside class="fixed left-0 top-0 h-full w-64 border-r border-slate-800 p-6 hidden lg:block">
-        <div class="flex items-center gap-2 mb-10">
-            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold">CP</div>
-            <span class="text-xl font-bold tracking-tight">CivicPulse <span class="text-blue-500">AI</span></span>
+    <header class="max-w-7xl mx-auto mb-12 flex justify-between items-end">
+        <div>
+            <h1 class="text-4xl font-display font-bold text-white tracking-tight">WAVE<span class="text-cyan-400">FLOW</span> AI</h1>
+            <p class="text-slate-400 mt-2">LWR-Model Based Kinematic Wave Optimization</p>
         </div>
-        <nav class="space-y-4">
-            <div class="text-xs text-slate-500 uppercase font-bold tracking-widest">Intelligence</div>
-            <a href="#" class="block p-3 bg-blue-600/10 text-blue-400 rounded-lg border border-blue-500/20">Sentiment Dashboard</a>
-            <a href="#" class="block p-3 text-slate-400 hover:text-white transition">Booth-Level Mapping</a>
-            <a href="#" class="block p-3 text-slate-400 hover:text-white transition">Speech Drafts</a>
-        </nav>
-    </aside>
-
-    <main class="lg:ml-64 p-8">
-        <header class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-2xl font-bold">Real-Time Sentiment Engine</h1>
-                <p class="text-slate-500 text-sm">Monitoring Constituency: District-A4</p>
+        <div class="hidden md:flex gap-4">
+            <div class="glass px-4 py-2 rounded-lg text-sm flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500 status-dot"></span>
+                System: Predictive Mode
             </div>
-            <div class="flex gap-4">
-                <button class="bg-slate-800 px-4 py-2 rounded-lg text-sm font-medium border border-slate-700">Export Report</button>
-                <button class="bg-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500 transition">Live Update</button>
+            <div class="glass px-4 py-2 rounded-lg text-sm">
+                Nodes: 1,420 Active
             </div>
-        </header>
+        </div>
+    </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <section class="lg:col-span-8 space-y-6">
+            <div class="glass rounded-2xl p-6 relative">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-display font-semibold">Live Wave Field Analysis</h2>
+                    <div class="flex gap-2 text-xs">
+                        <button class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 px-3 py-1 rounded">Density Map</button>
+                        <button class="bg-slate-800 text-slate-400 px-3 py-1 rounded">Flow Rate</button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="wave-container rounded-xl border border-slate-800" id="lane-1">
+                        <div class="absolute top-2 left-4 text-[10px] text-slate-500 uppercase tracking-widest">Inflow Corridor A (Standard)</div>
+                    </div>
+                    <div class="wave-container rounded-xl border border-slate-800" id="lane-2">
+                        <div class="absolute top-2 left-4 text-[10px] text-cyan-500 uppercase tracking-widest">Optimized Corridor B (Wave-Suppression)</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 mt-6">
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <div class="text-slate-500 text-xs mb-1 uppercase">Shockwave Speed ($w$)</div>
+                        <div class="text-2xl font-display text-white">-14.2 <span class="text-sm text-slate-400">km/h</span></div>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <div class="text-slate-500 text-xs mb-1 uppercase">Flow Rate ($q$)</div>
+                        <div class="text-2xl font-display text-white">1,840 <span class="text-sm text-slate-400">v/h</span></div>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <div class="text-slate-500 text-xs mb-1 uppercase">Avg Density ($k$)</div>
+                        <div class="text-2xl font-display text-white">42.8 <span class="text-sm text-slate-400">v/km</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-2xl math-card transition-all">
+                    <h3 class="text-cyan-400 font-display font-bold mb-3 flex items-center gap-2">
+                        <i data-lucide="activity" class="w-4 h-4"></i> Conservation Law
+                    </h3>
+                    <div class="bg-black/40 p-4 rounded text-center font-mono text-xl mb-4 text-cyan-500/80">
+                        $$\frac{\partial k}{\partial t} + \frac{\partial q}{\partial x} = 0$$
+                    </div>
+                    <p class="text-sm text-slate-400">Ensures vehicles are conserved. Density changes propagate as waves based on flow gradients.</p>
+                </div>
+                <div class="glass p-6 rounded-2xl math-card transition-all">
+                    <h3 class="text-pink-400 font-display font-bold mb-3 flex items-center gap-2">
+                        <i data-lucide="zap" class="w-4 h-4"></i> Rarefaction Trigger
+                    </h3>
+                    <div class="bg-black/40 p-4 rounded text-center font-mono text-xl mb-4 text-pink-500/80">
+                        $$q_{out} > q_{in} \implies \Delta k < 0$$
+                    </div>
+                    <p class="text-sm text-slate-400">Actively forces a density drop ahead of priority vehicles to create a "vacuum" corridor.</p>
+                </div>
+            </div>
+        </section>
+
+        <aside class="lg:col-span-4 space-y-6">
             <div class="glass p-6 rounded-2xl">
-                <p class="text-slate-400 text-sm">Overall Approval</p>
-                <h2 class="text-3xl font-bold text-green-400">68.4%</h2>
-                <div class="text-xs text-green-500 mt-2">↑ 2.4% from yesterday</div>
+                <h3 class="text-lg font-display font-semibold mb-4 border-b border-slate-800 pb-2">Optimization Strategy</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded bg-cyan-500/20 flex items-center justify-center shrink-0">
+                            <i data-lucide="eye" class="w-4 h-4 text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold">YOLO Edge Perception</h4>
+                            <p class="text-xs text-slate-400">Real-time object detection converting pixels to $k$ and $q$ metrics.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded bg-purple-500/20 flex items-center justify-center shrink-0">
+                            <i data-lucide="cpu" class="w-4 h-4 text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold">Wave Engine (LWR)</h4>
+                            <p class="text-xs text-slate-400">Predicting shockwave propagation 40s before queue formation.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded bg-emerald-500/20 flex items-center justify-center shrink-0">
+                            <i data-lucide="navigation" class="w-4 h-4 text-emerald-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold">Green Corridor Logic</h4>
+                            <p class="text-xs text-slate-400">Sequential phase shifting to suppress incoming high-density waves.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="glass p-6 rounded-2xl">
-                <p class="text-slate-400 text-sm">Critical Issues Flagged</p>
-                <h2 class="text-3xl font-bold text-red-400">14</h2>
-                <div class="text-xs text-slate-500 mt-2 font-mono">Top: Water Scarcity (Booth 102)</div>
-            </div>
-            <div class="glass p-6 rounded-2xl">
-                <p class="text-slate-400 text-sm">Active Conversations</p>
-                <h2 class="text-3xl font-bold text-blue-400">12.8k</h2>
-                <div class="text-xs text-slate-500 mt-2 italic">Monitoring 5 Languages</div>
-            </div>
-        </div>
 
-        <div class="glass p-8 rounded-2xl mb-8 glow-blue">
-            <h3 class="font-bold mb-6">Sentiment Volatility (Last 24 Hours)</h3>
-            <canvas id="sentimentChart" height="100"></canvas>
-        </div>
-
-        <div class="glass p-8 rounded-2xl">
-            <h3 class="font-bold mb-4">Analyze Specific Feedback</h3>
-            <textarea id="feedbackInput" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-slate-200 focus:outline-none focus:border-blue-500" placeholder="Paste social media post or ground report here..."></textarea>
-            <button onclick="analyzeSentiment()" class="mt-4 bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg font-bold transition">Run AI Analysis</button>
-            <div id="resultOutput" class="mt-4 hidden p-4 rounded-lg font-mono text-sm"></div>
-        </div>
+            <div class="glass p-6 rounded-2xl bg-gradient-to-br from-cyan-900/20 to-transparent">
+                <h3 class="text-lg font-display font-semibold mb-4">Emergency Priority</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Corridor Clearance</span>
+                        <span class="text-cyan-400">82%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-cyan-500 h-full w-[82%]"></div>
+                    </div>
+                    <button class="w-full bg-cyan-600 hover:bg-cyan-500 py-3 rounded-xl font-bold text-sm transition-all mt-4">
+                        DEPLOY RAREFACTION WAVE
+                    </button>
+                </div>
+            </div>
+        </aside>
     </main>
 
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
-        // Chart Initialization
-        const ctx = document.getElementById('sentimentChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['10AM', '12PM', '2PM', '4PM', '6PM', '8PM', '10PM'],
-                datasets: [{
-                    label: 'Positive Sentiment %',
-                    data: [62, 58, 70, 65, 68, 72, 68],
-                    borderColor: '#3b82f6',
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
-                    x: { grid: { display: false }, ticks: { color: '#64748b' } }
-                },
-                plugins: { legend: { display: false } }
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Traffic Simulation Logic
+        function createCar(laneId, speed, color = '#00f2ff') {
+            const lane = document.getElementById(laneId);
+            const car = document.createElement('div');
+            car.className = 'traffic-car';
+            car.style.top = `${Math.random() * 80 + 20}px`;
+            car.style.left = '-20px';
+            car.style.backgroundColor = color;
+            car.style.boxShadow = `0 0 10px ${color}`;
+            lane.appendChild(car);
+
+            let pos = -20;
+            const interval = setInterval(() => {
+                // Wave logic: slowed speed at 60% of the way to simulate a jam
+                let currentSpeed = speed;
+                if (laneId === 'lane-1' && pos > 200 && pos < 400) {
+                    currentSpeed = speed * 0.2; // Standard traffic jam
+                }
+                
+                pos += currentSpeed;
+                car.style.left = `${pos}px`;
+
+                if (pos > lane.offsetWidth) {
+                    clearInterval(interval);
+                    car.remove();
+                }
+            }, 30);
+        }
+
+        // Spawn loops
+        setInterval(() => {
+            // Lane 1: Higher density, prone to phantom jams
+            createCar('lane-1', Math.random() * 3 + 2, '#94a3b8');
+        }, 400);
+
+        setInterval(() => {
+            // Lane 2: Lower density, smooth flow
+            createCar('lane-2', 5, '#00f2ff');
+        }, 800);
+
+        // Rarefaction Event simulation
+        document.querySelector('button').addEventListener('click', () => {
+            for(let i=0; i<10; i++) {
+                setTimeout(() => createCar('lane-2', 8, '#f472b6'), i * 100);
             }
         });
-
-        // Function to call the Backend API
-        async function analyzeSentiment() {
-            const text = document.getElementById('feedbackInput').value;
-            const output = document.getElementById('resultOutput');
-            
-            output.className = "mt-4 p-4 rounded-lg font-mono text-sm bg-slate-800 text-blue-300";
-            output.classList.remove('hidden');
-            output.innerText = "Analyzing Multi-Language Data...";
-
-            try {
-                const response = await fetch('http://localhost:8000/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text })
-                });
-                const data = await response.json();
-                output.innerHTML = `<strong>Result:</strong> ${data.sentiment.toUpperCase()} <br> <strong>Score:</strong> ${(data.score * 100).toFixed(2)}%`;
-            } catch (err) {
-                output.innerText = "Error: Backend API not reachable. Check Python server.";
-                output.classList.add('text-red-400');
-            }
-        }
     </script>
 </body>
 </html>
