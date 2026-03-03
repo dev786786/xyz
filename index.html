@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicPulse AI | Public Leader Co-Pilot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        .glow-blue { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+    <aside class="fixed left-0 top-0 h-full w-64 border-r border-slate-800 p-6 hidden lg:block">
+        <div class="flex items-center gap-2 mb-10">
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold">CP</div>
+            <span class="text-xl font-bold tracking-tight">CivicPulse <span class="text-blue-500">AI</span></span>
+        </div>
+        <nav class="space-y-4">
+            <div class="text-xs text-slate-500 uppercase font-bold tracking-widest">Intelligence</div>
+            <a href="#" class="block p-3 bg-blue-600/10 text-blue-400 rounded-lg border border-blue-500/20">Sentiment Dashboard</a>
+            <a href="#" class="block p-3 text-slate-400 hover:text-white transition">Booth-Level Mapping</a>
+            <a href="#" class="block p-3 text-slate-400 hover:text-white transition">Speech Drafts</a>
+        </nav>
+    </aside>
+
+    <main class="lg:ml-64 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold">Real-Time Sentiment Engine</h1>
+                <p class="text-slate-500 text-sm">Monitoring Constituency: District-A4</p>
+            </div>
+            <div class="flex gap-4">
+                <button class="bg-slate-800 px-4 py-2 rounded-lg text-sm font-medium border border-slate-700">Export Report</button>
+                <button class="bg-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500 transition">Live Update</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-slate-400 text-sm">Overall Approval</p>
+                <h2 class="text-3xl font-bold text-green-400">68.4%</h2>
+                <div class="text-xs text-green-500 mt-2">↑ 2.4% from yesterday</div>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-slate-400 text-sm">Critical Issues Flagged</p>
+                <h2 class="text-3xl font-bold text-red-400">14</h2>
+                <div class="text-xs text-slate-500 mt-2 font-mono">Top: Water Scarcity (Booth 102)</div>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-slate-400 text-sm">Active Conversations</p>
+                <h2 class="text-3xl font-bold text-blue-400">12.8k</h2>
+                <div class="text-xs text-slate-500 mt-2 italic">Monitoring 5 Languages</div>
+            </div>
+        </div>
+
+        <div class="glass p-8 rounded-2xl mb-8 glow-blue">
+            <h3 class="font-bold mb-6">Sentiment Volatility (Last 24 Hours)</h3>
+            <canvas id="sentimentChart" height="100"></canvas>
+        </div>
+
+        <div class="glass p-8 rounded-2xl">
+            <h3 class="font-bold mb-4">Analyze Specific Feedback</h3>
+            <textarea id="feedbackInput" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-slate-200 focus:outline-none focus:border-blue-500" placeholder="Paste social media post or ground report here..."></textarea>
+            <button onclick="analyzeSentiment()" class="mt-4 bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg font-bold transition">Run AI Analysis</button>
+            <div id="resultOutput" class="mt-4 hidden p-4 rounded-lg font-mono text-sm"></div>
+        </div>
+    </main>
+
+    <script>
+        // Chart Initialization
+        const ctx = document.getElementById('sentimentChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['10AM', '12PM', '2PM', '4PM', '6PM', '8PM', '10PM'],
+                datasets: [{
+                    label: 'Positive Sentiment %',
+                    data: [62, 58, 70, 65, 68, 72, 68],
+                    borderColor: '#3b82f6',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
+                    x: { grid: { display: false }, ticks: { color: '#64748b' } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Function to call the Backend API
+        async function analyzeSentiment() {
+            const text = document.getElementById('feedbackInput').value;
+            const output = document.getElementById('resultOutput');
+            
+            output.className = "mt-4 p-4 rounded-lg font-mono text-sm bg-slate-800 text-blue-300";
+            output.classList.remove('hidden');
+            output.innerText = "Analyzing Multi-Language Data...";
+
+            try {
+                const response = await fetch('http://localhost:8000/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                const data = await response.json();
+                output.innerHTML = `<strong>Result:</strong> ${data.sentiment.toUpperCase()} <br> <strong>Score:</strong> ${(data.score * 100).toFixed(2)}%`;
+            } catch (err) {
+                output.innerText = "Error: Backend API not reachable. Check Python server.";
+                output.classList.add('text-red-400');
+            }
+        }
+    </script>
+</body>
+</html>
